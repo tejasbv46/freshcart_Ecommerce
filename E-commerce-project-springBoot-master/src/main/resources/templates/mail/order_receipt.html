@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Receipt</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+        .content {
+            padding: 30px 25px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .summary-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+        .summary-box table {
+            width: 100%;
+        }
+        .summary-box td {
+            padding: 3px 0;
+        }
+        .item-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+        .item-table th {
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+            color: #64748b;
+        }
+        .item-table td {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+        .total-row td {
+            font-weight: 800;
+            font-size: 16px;
+            color: #10b981;
+            padding-top: 15px;
+        }
+        .footer {
+            background-color: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Thank You for Your Order! 🎉</h1>
+        </div>
+        <div class="content">
+            <p>Hi <span th:text="${username}">Customer</span>,</p>
+            <p>Your order has been placed successfully. Here is your receipt for order reference <strong>#FC-<span th:text="${orderId}">123</span></strong>.</p>
+            
+            <div class="summary-box">
+                <table>
+                    <tr>
+                        <td style="color: #64748b; font-weight: bold;">Order Reference:</td>
+                        <td style="text-align: right; font-weight: bold;" th:text="'#FC-' + ${orderId}">#FC-123</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #64748b;">Date:</td>
+                        <td style="text-align: right;" th:text="${orderDate}">July 12, 2026</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #64748b;">Payment Method:</td>
+                        <td style="text-align: right; text-transform: uppercase;" th:text="${paymentMethod}">COD</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #64748b;">Shipping Address:</td>
+                        <td style="text-align: right;" th:text="${shippingAddress}">123 main street, city</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Items Summary</h3>
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: right;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${items}">
+                        <td th:text="${item.product.name}">Product Name</td>
+                        <td style="text-align: center;" th:text="${item.quantity}">1</td>
+                        <td style="text-align: right;" th:text="'$' + ${#numbers.formatDecimal(item.price * item.quantity, 1, 2)}">$10.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Total Amount Paid</td>
+                        <td></td>
+                        <td style="text-align: right;" th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">$10.00</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>We are preparing your items for delivery. You will receive another notification when your package ships.</p>
+            <p>Thank you for choosing FreshCart!</p>
+            <p>Best regards,<br><strong>The FreshCart Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>© 2026 FreshCart Inc. | Secure Transactions Powered by Java 21 & React</p>
+        </div>
+    </div>
+</body>
+</html>

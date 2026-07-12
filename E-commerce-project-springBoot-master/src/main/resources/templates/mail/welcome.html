@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to FreshCart</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .content {
+            padding: 40px 30px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .content h2 {
+            font-size: 20px;
+            margin-top: 0;
+            color: #1e293b;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+        .footer {
+            background-color: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to FreshCart! 🛒</h1>
+        </div>
+        <div class="content">
+            <h2>Hi, <span th:text="${username}">Lisa</span>!</h2>
+            <p>We are absolutely thrilled to welcome you to FreshCart. Your account has been successfully created and you're ready to start exploring our curated catalog of premium products.</p>
+            
+            <p>Here is what you can do next:</p>
+            <ul>
+                <li><strong>Browse Products:</strong> Filter through our dynamic catalog by categories and brands.</li>
+                <li><strong>Save for Later:</strong> Add items to your wishlist to check out when you are ready.</li>
+                <li><strong>Checkout Securely:</strong> Pay using UPI instantly or standard Credit Card inputs.</li>
+            </ul>
+
+            <div style="text-align: center;">
+                <a href="http://localhost:5173" class="button">Visit Our Store</a>
+            </div>
+
+            <p>If you have any questions or need assistance, feel free to reply to this email. We're here to help!</p>
+            <p>Best regards,<br><strong>The FreshCart Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>© 2026 FreshCart Inc. | Secure Transactions Powered by Java 21 & React</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.jtspringproject.JtSpringProject.controller;
 
 import com.jtspringproject.JtSpringProject.models.User;
+import com.jtspringproject.JtSpringProject.services.EmailService;
 import com.jtspringproject.JtSpringProject.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -22,10 +23,12 @@ public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
+    private final EmailService emailService;
 
-    public AuthRestController(AuthenticationManager authenticationManager, UserService userService) {
+    public AuthRestController(AuthenticationManager authenticationManager, UserService userService, EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -75,6 +78,9 @@ public class AuthRestController {
         newUser.setRole("ROLE_USER");
 
         User savedUser = userService.addUser(newUser);
+        
+        // Trigger welcome email asynchronously
+        emailService.sendWelcomeEmail(savedUser);
 
         Map<String, Object> response = new HashMap<>();
         response.put("id", savedUser.getId());
