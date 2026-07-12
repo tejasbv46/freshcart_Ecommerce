@@ -22,18 +22,41 @@ import com.jtspringproject.JtSpringProject.services.UserService;
 public class SecurityConfiguration {
 
 	private final UserService userService;
+	private final JwtAuthenticationFilter jwtAuthFilter;
 
-	public SecurityConfiguration(UserService userService) {
+	public SecurityConfiguration(UserService userService, JwtAuthenticationFilter jwtAuthFilter) {
 		this.userService = userService;
+		this.jwtAuthFilter = jwtAuthFilter;
 	}
 
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@org.springframework.core.annotation.Order(1)
+	SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.securityMatcher("/api/**")
+			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+			.csrf(csrf -> csrf.disable())
+			.sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
+			.authorizeHttpRequests(requests -> requests
+				.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
+				.requestMatchers("/api/products", "/api/products/**").permitAll()
+				.anyRequest().authenticated()
+			)
+			.exceptionHandling(handling -> handling
+				.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+			)
+			.addFilterBefore(jwtAuthFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+
+		return http.build();
+	}
+
+	@Bean
+	SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 			.authorizeHttpRequests(requests -> requests
 				.dispatcherTypeMatchers(jakarta.servlet.DispatcherType.FORWARD, jakarta.servlet.DispatcherType.ERROR).permitAll()
-				.requestMatchers("/", "/login", "/register", "/newuserregister", "/search", "/product/**", "/api/wishlist/check", "/api/auth/**").permitAll()
+				.requestMatchers("/", "/login", "/register", "/newuserregister", "/search", "/product/**").permitAll()
 				.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
@@ -56,12 +79,6 @@ public class SecurityConfiguration {
 				.logoutUrl("/logout")
 				.logoutSuccessUrl("/login")
 				.deleteCookies("JSESSIONID")
-			)
-			.exceptionHandling(handling -> handling
-				.defaultAuthenticationEntryPointFor(
-					new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-					new AntPathRequestMatcher("/api/**")
-				)
 			)
 			.csrf(csrf -> csrf
 				.ignoringRequestMatchers(new AntPathRequestMatcher("/api/**"))
