@@ -1,232 +1,101 @@
-<a href="https://trendshift.io/repositories/151" target="_blank"><img src="https://trendshift.io/api/badge/repositories/151" alt="jaygajera17%2FE-commerce-project-springBoot | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+# 🛒 FreshCart E-Commerce Platform
 
-# E-commerce Spring Boot (JSP + Hibernate)
+A production-ready, modernized full-stack e-commerce web application featuring a secure **Java Spring Boot 3.4 (Java 21)** REST API backend and a fully responsive **React.js (Vite + Tailwind CSS)** Single Page Application (SPA) frontend.
 
-Production-oriented Java e-commerce web application built with Spring Boot, JSP, Spring Security, and Hibernate SessionFactory.
+---
 
-This project follows a layered MVC architecture and supports role-based access for admin and customer workflows.
+## 📸 Screenshots & Previews
 
-<br/><br/>
+*(Place your application screenshots in a `screenshots/` folder to display them here)*
 
-<h1>🛒 E-Commerce Spring Boot</h1>
- 
-<p>A production-oriented Java e-commerce web application built with Spring Boot, JSP, Spring Security, and Hibernate — featuring role-based access for admin and customer workflows.</p>
-<br/>
-<!-- Badges Row 1: Community -->
-<p>
-  <a href="https://github.com/jaygajera17/E-commerce-project-springBoot/stargazers">
-    <img src="https://img.shields.io/github/stars/jaygajera17/E-commerce-project-springBoot?style=flat-square&logo=github&labelColor=1a1a2e&color=f5a623&label=Stars" alt="Stars"/>
-  </a>
-  <a href="https://github.com/jaygajera17/E-commerce-project-springBoot/network/members">
-    <img src="https://img.shields.io/github/forks/jaygajera17/E-commerce-project-springBoot?style=flat-square&logo=github&labelColor=1a1a2e&color=4a90d9&label=Forks" alt="Forks"/>
-  </a>
-  <a href="https://github.com/jaygajera17/E-commerce-project-springBoot/issues">
-    <img src="https://img.shields.io/github/issues/jaygajera17/E-commerce-project-springBoot?style=flat-square&logo=github&labelColor=1a1a2e&color=e05c5c&label=Issues" alt="Issues"/>
-  </a>
-  <a href="https://github.com/jaygajera17/E-commerce-project-springBoot/pulls">
-    <img src="https://img.shields.io/github/issues-pr/jaygajera17/E-commerce-project-springBoot?style=flat-square&logo=github&labelColor=1a1a2e&color=8e44ad&label=Pull+Requests" alt="Pull Requests"/>
-  </a>
-  <a href="https://github.com/jaygajera17/E-commerce-project-springBoot/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/jaygajera17/E-commerce-project-springBoot?style=flat-square&logo=github&labelColor=1a1a2e&color=27ae60&label=Contributors" alt="Contributors"/>
-  </a>
-</p>
+### 1. Catalog Home Page & Search
+![Catalog Home](screenshots/homepage.png)
+*Modern, clean store catalog with dynamic brand/category sidebar filtering and real-time product search.*
 
-<br/>
+### 2. High-Fidelity Checkout & Payment Simulators
+![Checkout Flow](screenshots/checkout.png)
+*Address selector cards, validation coupon code input, GST taxation metrics, UPI QR scanner, and secure Stripe credit card forms.*
 
-## Highlights
+### 3. Interactive Admin Dashboard
+![Admin Dashboard](screenshots/admin_dashboard.png)
+*Recharts analytics display indicating total revenue, orders count, stock inventory warnings, and live CRUD management tables.*
 
-- Server-rendered e-commerce app (JSP views)
-- Spring Security authentication and role-based authorization
-- Custom Hibernate SessionFactory configuration (non-Spring-Data JPA runtime)
-- MySQL-backed persistence with DAO and service layers
-- Admin modules for products, categories, and customer listing
-- User modules for registration, login, profile management, and product browsing
-- Jenkins pipeline file included for CI/CD bootstrap
+---
 
-## Tech Stack
+## ✨ Core Features
 
-<p>
-  <img src="https://img.shields.io/badge/Java-11-ED8B00?style=flat-square&logo=openjdk&logoColor=white&labelColor=1a1a2e" alt="Java 11"/>
-  <img src="https://img.shields.io/badge/Spring%20Boot-2.6.4-6DB33F?style=flat-square&logo=springboot&logoColor=white&labelColor=1a1a2e" alt="Spring Boot"/>
-  <img src="https://img.shields.io/badge/Spring%20Security-5.x-6DB33F?style=flat-square&logo=springsecurity&logoColor=white&labelColor=1a1a2e" alt="Spring Security"/>
-  <img src="https://img.shields.io/badge/Hibernate-ORM-59666C?style=flat-square&logo=hibernate&logoColor=white&labelColor=1a1a2e" alt="Hibernate"/>
-  <img src="https://img.shields.io/badge/MySQL-8.x-4479A1?style=flat-square&logo=mysql&logoColor=white&labelColor=1a1a2e" alt="MySQL"/>
-  <img src="https://img.shields.io/badge/Maven-Build-C71A36?style=flat-square&logo=apachemaven&logoColor=white&labelColor=1a1a2e" alt="Maven"/>
-</p>
+### 🛍️ Client / Customer Experience
+* **Asynchronous AJAX Shopping Cart:** Add items, delete items, and adjust quantity numbers instantly without any page reloads.
+* **Save For Later:** Easily switch products back and forth between your active shopping cart and a saved wishlist.
+* **Address Book Manager:** Save multiple shipping locations (home, office, etc.) for quick selection during checkout.
+* **Coupon & Promotions:** Validates code constraints (`DISCOUNT_20`, `FRESH50`) and dynamically calculates percentage savings.
+* **Simulated Payment Gateways:** Experience UPI QR code scanning or secure credit card modals.
+* **Product Reviews:** Submit ratings and comments directly on the product detail page.
 
-- Java 11
-- Spring Boot 2.6.4
-- Spring MVC
-- Spring Security
-- Hibernate ORM (via `LocalSessionFactoryBean`)
-- JSP + JSTL + Tomcat Jasper
-- MySQL 8 connector
-- Maven
+### ⚙️ Store Administration (Admin Panel)
+* **Sales Analytics Chart:** Renders weekly/daily sales volume and total revenues using Recharts.
+* **Low Stock Alarm:** Automated warnings for inventory items dropping below critical levels (qty < 25).
+* **Inventory CRUD Controls:** Programmatically add, edit, or delete Categories, Brands, and Products.
 
-## Project Structure
+---
 
-```text
-src/main/java/com/jtspringproject/JtSpringProject/
-  configuration/     # Security config
-  controller/        # MVC controllers
-  dao/               # Data access layer
-  models/            # Entities
-  services/          # Business layer
-  repository/        # Spring Data repository (partial)
-  HibernateConfiguration.java
-  JtSpringProjectApplication.java
-src/main/resources/
-  application.properties
-src/main/webapp/views/
-  *.jsp
-basedata.sql
-pom.xml
-```
+## 🛠️ Tech Stack
 
-## Getting Started
+### Backend
+* **Java 21**
+* **Spring Boot 3.4.1**
+* **Spring Security 6** (BCrypt hashing, CORS policies, CSRF compliance)
+* **Spring Data JPA & Hibernate**
+* **PostgreSQL** database engine
+* **Maven** package manager
 
-### Prerequisites
+### Frontend
+* **React 19**
+* **Vite** (Next-gen bundling & HMR)
+* **Tailwind CSS v4** (Utility-first styling plugin)
+* **Recharts** (Visual dashboard metrics)
+* **Lucide React** (Modern iconography)
 
-- Java 11+
-- Maven 3.8+
-- MySQL or MariaDB
+---
 
-### 1) Clone and move into project
+## 🚀 Getting Started & Setup
 
-```bash
-git clone https://github.com/jaygajera17/E-commerce-project-springBoot.git
-cd E-commerce-project-springBoot
-```
+### 1. Backend Database Setup
+Make sure you have a running PostgreSQL server on port `5432` with a database named `ecommjava`.
 
-### 2) Configure database
-
-Update `src/main/resources/application.properties`:
-
+Update the connection credentials in `src/main/resources/application.properties`:
 ```properties
-db.driver=com.mysql.cj.jdbc.Driver
-db.url=jdbc:mysql://localhost:3306/ecommjava?createDatabaseIfNotExist=true
-db.username=your_db_user
-db.password=your_db_password
-
-hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
-hibernate.show_sql=true
-hibernate.hbm2ddl.auto=update
-entitymanager.packagesToScan=com
+spring.datasource.url=jdbc:postgresql://localhost:5432/ecommjava
+spring.datasource.username=your_postgres_username
+spring.datasource.password=your_postgres_password
 ```
 
-### 3) Optional: seed sample data
-
-Run `basedata.sql` against your database if you want initial categories/users/products.
-
-Note: sample credentials in `basedata.sql` are development-only defaults.
-
-### 4) Run the app
-
+### 2. Run the Spring Boot Server
+Launch the backend from the root directory:
 ```bash
-mvn clean package
-mvn spring-boot:run
+# Clean, compile, and run the backend
+.\mvnw.cmd spring-boot:run
 ```
+*The REST APIs will run live on **`http://localhost:8080`**.*
 
-App URL: http://localhost:8080/
-
-## IDE Notes (IntelliJ)
-
-If JSP views are not resolved, set the run configuration working directory to `$MODULE_WORKING_DIR$`.
-
-## Core Endpoints
-
-### Public/User
-
-- `/`
-- `/login`
-- `/register`
-- `/newuserregister`
-- `/user/products`
-- `/profileDisplay`
-
-### Admin
-
-- `/admin/`
-- `/admin/Dashboard`
-- `/admin/products`
-- `/admin/categories`
-- `/admin/customers`
-
-## Security Model
-
-- Admin routes under `/admin/**` require role `ADMIN`
-- User routes require role `USER`
-- Login pages:
-  - Admin: `/admin/login`
-  - User: `/login`
-- CSRF protection is enabled for form submissions
-
-## Build and Test
-
+### 3. Run the React Frontend
+Navigate to the `frontend/` directory, install packages, and start the Vite server:
 ```bash
-mvn clean verify
+cd frontend
+npm install
+npm run dev
 ```
+*The React user interface will launch live on **`http://localhost:5173`**.*
 
-Notes:
+---
 
-- `mvn test` requires a reachable database because context startup initializes Hibernate and datasource beans.
+## 🔑 Demo Access Credentials
 
-## CI/CD
+The database automatically seeds these standard users on initial startup if the database tables are clean:
 
-A Jenkins pipeline is included in `jenkins file` with stages for:
-
-- Checkout
-- Build
-- Test
-- Deploy (template placeholder)
-
-Adjust branch, deployment steps, and credentials for your environment.
-
-## Troubleshooting
-
-- `Could not resolve placeholder 'db.driver'`:
-  - Ensure all `db.*` keys exist in `application.properties`
-- JSP pages not rendering:
-  - Verify working directory and `spring.mvc.view.prefix=/views/`
-- Tests failing on startup:
-  - Start MySQL and verify connection credentials first
-
-## Screenshots
-
-![Preview 1](https://github.com/jaygajera17/E-commerce-project-springBoot/assets/81226571/02a04d3c-1fc9-418c-b231-639f6525d07e)
-![Preview 2](https://github.com/jaygajera17/E-commerce-project-springBoot/assets/81226571/24c4451b-43a6-4c23-a78a-786eab4303b0)
-![Preview 3](https://github.com/jaygajera17/E-commerce-project-springBoot/assets/81226571/93c1baeb-326c-450f-867e-a883900a6644)
-
-## Roadmap
-
-See the full roadmap in [roadmap.md](roadmap.md).
-
-Current priorities:
-
-- Solid foundation: CI, Docker Compose, contribution workflow, and test coverage.
-- Complete e-commerce domain: cart, checkout, auth, search, and API docs.
-- Industry patterns: caching, concurrency control, observability, and scalability.
-- Long-term architecture: event-driven patterns and microservice decomposition guide.
-
-## Demo
-
-demo video: https://youtu.be/c6WWdINWSlI
-
-## ⭐ Support This Project
-
-If this project helped you, please consider giving it a star on GitHub.
-Your support helps improve visibility and motivates future maintenance.
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=jaygajera17%2FE-commerce-project-springBoot&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=jaygajera17/E-commerce-project-springBoot&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=jaygajera17/E-commerce-project-springBoot&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=jaygajera17/E-commerce-project-springBoot&type=date&legend=top-left" />
- </picture>
-</a>
-
-<div align="center">
-  <sub>Built as a college project · Grown into a community resource · Maintained with ❤️</sub>
-</div>
+* **Customer Account:**
+  * **Username:** `lisa`
+  * **Password:** `lisa`
+* **Admin Account:**
+  * **Username:** `admin`
+  * **Password:** `admin`
