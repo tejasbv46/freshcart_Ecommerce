@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Add Product | FreshCart')}">
+</head>
+<body>
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container py-4 my-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card card-custom p-4 shadow-sm">
+                    <div class="d-flex align-items-center mb-4">
+                        <a href="/admin/products" class="btn btn-outline-secondary rounded-circle me-3 p-2" style="width: 40px; height: 40px; line-height: 22px;"><i class="fa-solid fa-arrow-left"></i></a>
+                        <h3 class="fw-bold mb-0">Add New Product</h3>
+                    </div>
+
+                    <form th:action="@{/admin/products/add}" method="post">
+                        <!-- Name & Category & Brand -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="name" class="form-label small fw-semibold">Product Name*</label>
+                                <input type="text" class="form-control rounded-3" id="name" name="name" placeholder="Enter product name" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="categoryid" class="form-label small fw-semibold">Category*</label>
+                                <select class="form-select rounded-3" id="categoryid" name="categoryid" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">Category</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="brandId" class="form-label small fw-semibold">Brand*</label>
+                                <select class="form-select rounded-3" id="brandId" name="brandId" required>
+                                    <option value="" disabled selected>Select Brand</option>
+                                    <option th:each="brnd : ${brands}" th:value="${brnd.id}" th:text="${brnd.name}">Brand</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Price & Weight & Quantity & Discount -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3">
+                                <label for="price" class="form-label small fw-semibold">Price ($)*</label>
+                                <input type="number" class="form-control rounded-3" id="price" name="price" placeholder="Price" required min="1">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="discountPercentage" class="form-label small fw-semibold">Discount (%)</label>
+                                <input type="number" class="form-control rounded-3" id="discountPercentage" name="discountPercentage" placeholder="Discount %" min="0" max="99" value="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="weight" class="form-label small fw-semibold">Weight (grams)*</label>
+                                <input type="number" class="form-control rounded-3" id="weight" name="weight" placeholder="Weight" required min="1">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="quantity" class="form-label small fw-semibold">Quantity in Stock*</label>
+                                <input type="number" class="form-control rounded-3" id="quantity" name="quantity" placeholder="Stock quantity" required min="0">
+                            </div>
+                        </div>
+
+                        <!-- Image URLs -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="image" class="form-label small fw-semibold">Main Image URL*</label>
+                                <input type="url" class="form-control rounded-3" id="image" name="image" placeholder="https://example.com/image.png" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="imageGallery" class="form-label small fw-semibold">Gallery Image URLs (comma-separated)</label>
+                                <input type="text" class="form-control rounded-3" id="imageGallery" name="imageGallery" placeholder="url1,url2,url3">
+                            </div>
+                        </div>
+
+                        <!-- Specifications -->
+                        <div class="mb-3">
+                            <label for="specifications" class="form-label small fw-semibold">Specifications (format: key:value | key:value)</label>
+                            <input type="text" class="form-control rounded-3" id="specifications" name="specifications" placeholder="Origin:India | Shelf Life:10 days | Type:Fresh">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label small fw-semibold">Description</label>
+                            <textarea class="form-control rounded-3" id="description" name="description" rows="3" placeholder="Enter product details and description..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient-primary rounded-pill px-4 py-2.5 w-100">Add Product to Catalog</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

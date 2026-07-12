@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Shopping Cart | FreshCart E-Commerce')}">
+</head>
+<body>
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container py-4 my-3">
+        <h2 class="fw-bold mb-4"><i class="fa-solid fa-bag-shopping text-primary me-2"></i>My Shopping Cart</h2>
+
+        <!-- Empty State -->
+        <div class="card card-custom p-5 text-center border-0 mb-4" th:if="${#lists.isEmpty(cartItems)}">
+            <div class="mb-4">
+                <i class="fa-solid fa-basket-shopping text-secondary display-1"></i>
+            </div>
+            <h4 class="fw-bold">Your cart is empty</h4>
+            <p class="text-secondary mb-4">Add products to your cart and they will appear here.</p>
+            <a href="/" class="btn btn-gradient-primary rounded-pill px-4">Continue Shopping</a>
+        </div>
+
+        <!-- Cart Grid -->
+        <div class="row g-4" th:unless="${#lists.isEmpty(cartItems)}">
+            <!-- Left: Cart Items -->
+            <div class="col-lg-8">
+                <div class="card card-custom p-4">
+                    <div class="d-flex flex-column gap-3">
+                        <!-- Item Row -->
+                        <div class="row align-items-center g-3 border-bottom pb-3" th:each="item : ${cartItems}">
+                            <!-- Product Image -->
+                            <div class="col-md-2 col-3 text-center bg-light rounded-3 p-2 d-flex align-items-center justify-content-center" style="height: 80px;">
+                                <img th:src="${item.product.image}" class="img-fluid rounded" alt="Item Image" style="max-height: 70px; object-fit: contain;">
+                            </div>
+                            <!-- Product Name & Category -->
+                            <div class="col-md-4 col-9">
+                                <h6 class="fw-bold mb-1" th:text="${item.product.name}">Product Name</h6>
+                                <span class="text-secondary small" th:text="${item.product.category != null ? item.product.category.name : 'Groceries'}">Category</span>
+                            </div>
+                            <!-- Quantity Editor -->
+                            <div class="col-md-3 col-6 d-flex align-items-center">
+                                <div class="input-group input-group-sm rounded-pill border" style="width: 110px; overflow: hidden;">
+                                    <button class="btn btn-light border-0 qty-btn" type="button" th:data-id="${item.product.id}" data-action="decrease"><i class="fa-solid fa-minus fs-6"></i></button>
+                                    <input type="text" class="form-control text-center border-0 bg-transparent fw-semibold" th:value="${item.quantity}" readonly>
+                                    <button class="btn btn-light border-0 qty-btn" type="button" th:data-id="${item.product.id}" data-action="increase"><i class="fa-solid fa-plus fs-6"></i></button>
+                                </div>
+                            </div>
+                            <!-- Pricing & Actions -->
+                            <div class="col-md-3 col-6 text-end">
+                                <h6 class="fw-bold text-primary mb-1" th:text="${'$' + (item.product.price * item.quantity)}">$0.00</h6>
+                                <div class="d-flex flex-column align-items-end gap-1 mt-1">
+                                    <button type="button" class="btn btn-link text-danger text-decoration-none small p-0 remove-item-btn" th:data-id="${item.product.id}">
+                                        <i class="fa-solid fa-trash me-1"></i> Remove
+                                    </button>
+                                    <button type="button" class="btn btn-link text-secondary text-decoration-none small p-0 save-for-later-btn" th:data-id="${item.product.id}">
+                                        <i class="fa-regular fa-bookmark me-1"></i> Save for later
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="col-lg-4">
+                <!-- Apply Coupon -->
+                <div class="card card-custom p-4 mb-4">
+                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-ticket text-primary me-2"></i>Apply Coupon</h6>
+                    <div class="input-group">
+                        <input type="text" class="form-control rounded-start-pill" placeholder="Coupon Code" id="coupon-code">
+                        <button class="btn btn-outline-primary rounded-end-pill px-3" type="button" id="apply-coupon-btn">Apply</button>
+                    </div>
+                    <div class="text-success small mt-2 d-none" id="coupon-success-msg"></div>
+                </div>
+
+                <!-- Price Details -->
+                <div class="card card-custom p-4">
+                    <h5 class="fw-bold mb-4">Order Summary</h5>
+                    <div class="d-flex flex-column gap-3 small border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span>Subtotal</span>
+                            <span class="fw-bold text-body" th:text="${'$' + subtotal}">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span>Discount</span>
+                            <span class="fw-bold text-success" id="discount-amount">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span>GST (18%)</span>
+                            <span class="fw-bold text-body" th:text="${'$' + gst}">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span>Delivery Charges</span>
+                            <span class="fw-bold text-body" th:text="${deliveryCharges > 0 ? '$' + deliveryCharges : 'FREE'}">FREE</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold fs-5">Total</span>
+                        <span class="fw-bold fs-5 text-primary" id="order-total" th:text="${'$' + total}">$0.00</span>
+                    </div>
+
+                    <a href="/checkout" class="btn btn-gradient-primary w-100 rounded-pill py-2.5 btn-lg mb-2">Proceed to Checkout</a>
+                    <a href="/" class="btn btn-outline-secondary w-100 rounded-pill py-2">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+    <div th:replace="~{layout :: scripts}"></div>
+
+    <!-- Quantity, Remove & Save for Later Logic -->
+    <script>
+        document.querySelectorAll('.qty-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                const action = this.getAttribute('data-action');
+                let currentQty = parseInt(this.parentElement.querySelector('input').value);
+                
+                let newQty = action === 'increase' ? currentQty + 1 : currentQty - 1;
+                
+                fetch('/api/cart/update?productId=' + productId + '&quantity=' + newQty, {
+                    method: 'POST'
+                })
+                .then(res => {
+                    if (res.ok) {
+                        window.location.reload();
+                    } else {
+                        showToast('Error updating item quantity.', 'danger');
+                    }
+                })
+                .catch(() => showToast('Network error.', 'danger'));
+            });
+        });
+
+        document.querySelectorAll('.remove-item-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                fetch('/api/cart/remove?productId=' + productId, {
+                    method: 'POST'
+                })
+                .then(res => {
+                    if (res.ok) {
+                        showToast('Item removed from cart!');
+                        window.location.reload();
+                    } else {
+                        showToast('Error removing item from cart.', 'danger');
+                    }
+                })
+                .catch(() => showToast('Network error.', 'danger'));
+            });
+        });
+
+        // Save for Later (adds to wishlist and removes from cart)
+        document.querySelectorAll('.save-for-later-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                
+                fetch('/api/wishlist/add?productId=' + productId, { method: 'POST' })
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    if (res.ok) {
+                        return fetch('/api/cart/remove?productId=' + productId, { method: 'POST' });
+                    }
+                    throw new Error();
+                })
+                .then(res => {
+                    if (res && res.ok) {
+                        showToast('Product saved for later!');
+                        window.location.reload();
+                    }
+                })
+                .catch(() => showToast('Failed to save item for later.', 'danger'));
+            });
+        });
+
+        // Coupon Handling
+        const applyCouponBtn = document.getElementById('apply-coupon-btn');
+        if (applyCouponBtn) {
+            applyCouponBtn.addEventListener('click', function() {
+                const code = document.getElementById('coupon-code').value;
+                if (!code.trim()) return;
+
+                const subtotalVal = /*[[${subtotal}]]*/ 0;
+                fetch('/api/coupon/validate?code=' + encodeURIComponent(code) + '&subtotal=' + subtotalVal)
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            throw new Error('Invalid coupon');
+                        }
+                    })
+                    .then(coupon => {
+                        const subtotal = /*[[${subtotal}]]*/ 0;
+                        const discount = Math.min((subtotal * coupon.discountPercentage) / 100, coupon.maxDiscountAmount);
+                        const gst = /*[[${gst}]]*/ 0;
+                        const delivery = /*[[${deliveryCharges}]]*/ 0;
+                        const newTotal = subtotal - discount + gst + delivery;
+
+                        document.getElementById('discount-amount').innerText = '-$' + discount.toFixed(2);
+                        document.getElementById('order-total').innerText = '$' + newTotal.toFixed(2);
+                        
+                        const successMsg = document.getElementById('coupon-success-msg');
+                        successMsg.innerText = 'Coupon applied successfully! Saved $' + discount.toFixed(2);
+                        successMsg.classList.remove('d-none');
+                        
+                        sessionStorage.setItem('appliedCoupon', coupon.code);
+                        showToast('Coupon applied!');
+                    })
+                    .catch(() => {
+                        document.getElementById('coupon-success-msg').classList.add('d-none');
+                        showToast('Invalid coupon or minimum spend not met.', 'danger');
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

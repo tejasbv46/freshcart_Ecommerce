@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Search Products | FreshCart E-Commerce')}">
+</head>
+<body>
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container py-4 my-3">
+        <div class="row g-4">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3">
+                <div class="card card-custom p-4">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-sliders text-primary me-2"></i>Filters</h5>
+                    
+                    <!-- Categories -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Category</h6>
+                        <div class="d-flex flex-column gap-2 small">
+                            <a href="/search" class="text-decoration-none text-secondary" th:classappend="${selectedCategory == null ? 'text-primary fw-semibold' : ''}">All Categories</a>
+                            <a th:each="cat : ${categories}" th:href="@{/search(category=${cat.name}, q=${query})}" class="text-decoration-none text-secondary" th:classappend="${selectedCategory == cat.name ? 'text-primary fw-semibold' : ''}" th:text="${cat.name}">Category</a>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Price Range</h6>
+                        <form action="/search" method="get">
+                            <input type="hidden" name="q" th:value="${query}">
+                            <input type="hidden" name="category" th:value="${selectedCategory}">
+                            <div class="row g-2 align-items-center mb-2">
+                                <div class="col">
+                                    <input type="number" class="form-control form-control-sm rounded" placeholder="Min" name="minPrice" th:value="${minPrice}">
+                                </div>
+                                <div class="col-auto text-secondary">-</div>
+                                <div class="col">
+                                    <input type="number" class="form-control form-control-sm rounded" placeholder="Max" name="maxPrice" th:value="${maxPrice}">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill">Apply Price</button>
+                        </form>
+                    </div>
+
+                    <!-- Ratings -->
+                    <div>
+                        <h6 class="fw-bold mb-2">Customer Rating</h6>
+                        <div class="d-flex flex-column gap-2 small">
+                            <a href="#" class="text-decoration-none text-secondary"><i class="fa-solid fa-star text-warning"></i> 4.0 & Up</a>
+                            <a href="#" class="text-decoration-none text-secondary"><i class="fa-solid fa-star text-warning"></i> 3.0 & Up</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Results Area -->
+            <div class="col-lg-9">
+                <!-- Search Info -->
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3 bg-body-tertiary p-3 rounded-3 border">
+                    <div class="text-secondary small">
+                        Showing results for <span class="fw-bold text-body" th:text="${query != null && !query.isEmpty() ? '''' + query + '''' : 'All Products'}">"Apple"</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small text-secondary text-nowrap">Sort by:</span>
+                        <select class="form-select form-select-sm rounded-pill" style="width: auto;">
+                            <option>Newest Arrivals</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                            <option>Best Rated</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="alert alert-info text-center py-5 rounded-3 border-0" th:if="${#lists.isEmpty(products)}">
+                    <i class="fa-solid fa-folder-open fs-2 mb-2"></i>
+                    <p class="mb-0">No matching products found. Try using different keywords or clearing filters.</p>
+                </div>
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" th:unless="${#lists.isEmpty(products)}">
+                    <!-- Product Card -->
+                    <div class="col" th:each="prod : ${products}">
+                        <div class="card card-custom h-100 d-flex flex-column">
+                            <span class="badge bg-danger position-absolute m-3" th:if="${prod.discountPercentage > 0}" th:text="${prod.discountPercentage + '% OFF'}">10% OFF</span>
+                            
+                            <!-- Image -->
+                            <div class="p-3 text-center bg-light-subtle d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <a th:href="@{/product/{id}(id=${prod.id})}">
+                                    <img th:src="${prod.image}" class="img-fluid rounded" alt="Product Image" style="max-height: 180px; width: auto; object-fit: contain;">
+                                </a>
+                            </div>
+
+                            <!-- Body -->
+                            <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                                <span class="text-secondary small fw-semibold" th:text="${prod.category != null ? prod.category.name : 'Groceries'}">Category</span>
+                                <h6 class="fw-bold my-1 text-truncate">
+                                     <a th:href="@{/product/{id}(id=${prod.id})}" class="text-decoration-none text-body" th:text="${prod.name}">Product Name</a>
+                                 </h6>
+                                
+                                <div class="d-flex align-items-center gap-1 text-warning small mb-3">
+                                    <i class="fa-solid fa-star"></i>
+                                    <span class="text-secondary small pt-1" th:text="${prod.rating + ' (' + prod.reviewsCount + ' reviews)'}">5.0 (0)</span>
+                                </div>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="fs-5 fw-bold text-primary" th:text="${'$' + prod.price}">$3.0</span>
+                                        <span class="text-decoration-line-through text-secondary small ms-2" th:if="${prod.originalPrice > prod.price}" th:text="${'$' + prod.originalPrice}">$4.0</span>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 add-to-cart-btn" th:data-id="${prod.id}">
+                                        <i class="fa-solid fa-plus me-1"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+    <div th:replace="~{layout :: scripts}"></div>
+
+    <!-- Cart AJAX Add Script -->
+    <script>
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                fetch('/api/cart/add?productId=' + productId + '&quantity=1', {
+                    method: 'POST'
+                })
+                .then(res => {
+                    if (res.redirected) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    if (res.ok) {
+                        showToast('Product added to cart!');
+                        refreshCartBadge();
+                    } else if (res.status === 401) {
+                        window.location.href = '/login';
+                    } else {
+                        showToast('Error adding product to cart.', 'danger');
+                    }
+                })
+                .catch(() => showToast('Network error.', 'danger'));
+            });
+        });
+    </script>
+</body>
+</html>

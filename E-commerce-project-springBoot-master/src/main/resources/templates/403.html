@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Access Denied | FreshCart')}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container my-auto py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card card-custom p-5">
+                    <div class="text-danger mb-4">
+                        <i class="fa-solid fa-triangle-exclamation display-1"></i>
+                    </div>
+                    <h3 class="fw-bold">403 - Access Denied</h3>
+                    <p class="text-secondary mb-4">You do not have the required administrative permissions to access this page.</p>
+                    <a href="/" class="btn btn-gradient-primary rounded-pill px-4 py-2"><i class="fa-solid fa-house me-2"></i>Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

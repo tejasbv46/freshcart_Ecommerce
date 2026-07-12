@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Register | FreshCart E-Commerce')}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container my-auto py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card card-custom p-4">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-user-plus text-primary fs-1 mb-2"></i>
+                        <h4 class="fw-bold">Create Account</h4>
+                        <p class="text-secondary small">Sign up to buy products and track delivery.</p>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div class="alert alert-danger border-0 rounded-3 small py-2 text-center" th:if="${msg}" th:text="${msg}">
+                        An error occurred.
+                    </div>
+
+                    <form th:action="@{/newuserregister}" method="post">
+                        <!-- Username -->
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label small fw-semibold">Username*</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary"><i class="fa-solid fa-user"></i></span>
+                                <input type="text" name="username" id="username" class="form-control border-start-0 ps-0 bg-light" placeholder="Choose a username" required>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label small fw-semibold">Email Address*</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary"><i class="fa-solid fa-envelope"></i></span>
+                                <input type="email" name="email" id="email" class="form-control border-start-0 ps-0 bg-light" placeholder="yourname@example.com" required>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label small fw-semibold">Password*</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary"><i class="fa-solid fa-lock"></i></span>
+                                <input type="password" name="password" id="password" class="form-control border-start-0 ps-0 bg-light" placeholder="Create a strong password" required>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group mb-4">
+                            <label for="address" class="form-label small fw-semibold">Delivery Address*</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary"><i class="fa-solid fa-location-dot"></i></span>
+                                <textarea name="address" id="address" class="form-control border-start-0 ps-0 bg-light" rows="2" placeholder="Street, City, Zip Code" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-gradient-primary w-100 rounded-pill py-2.5 mb-3">
+                            Sign Up
+                        </button>
+                    </form>
+
+                    <div class="text-center small text-secondary">
+                        Already have an account? <a href="/login" class="text-primary text-decoration-none fw-semibold">Log in here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+    <div th:replace="~{layout :: scripts}"></div>
+</body>
+</html>

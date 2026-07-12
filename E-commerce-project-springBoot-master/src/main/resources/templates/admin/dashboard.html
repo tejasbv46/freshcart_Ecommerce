@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Admin Dashboard | FreshCart')}">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container py-4 my-3">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="card card-custom p-4">
+                    <h5 class="fw-bold mb-4"><i class="fa-solid fa-gauge text-danger me-2"></i>Admin Panel</h5>
+                    <div class="nav flex-column nav-pills gap-2 text-start">
+                        <a href="/admin/Dashboard" class="nav-link active rounded-pill px-4 py-2.5"><i class="fa-solid fa-chart-pie me-2"></i>Dashboard</a>
+                        <a href="/admin/products" class="nav-link rounded-pill px-4 py-2.5 text-secondary"><i class="fa-solid fa-box-open me-2"></i>Products</a>
+                        <a href="/admin/categories" class="nav-link rounded-pill px-4 py-2.5 text-secondary"><i class="fa-solid fa-folder-open me-2"></i>Categories</a>
+                        <a href="/admin/customers" class="nav-link rounded-pill px-4 py-2.5 text-secondary"><i class="fa-solid fa-users me-2"></i>Customers</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <h3 class="fw-bold mb-4">Dashboard Overview</h3>
+
+                <!-- Top Metric Cards -->
+                <div class="row g-3 mb-4">
+                    <!-- Total Revenue -->
+                    <div class="col-md-4">
+                        <div class="card card-custom p-4 border-start border-4 border-success">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-secondary small fw-semibold">Total Revenue</span>
+                                    <h3 class="fw-bold mb-0 mt-1" th:text="${'$' + totalRevenue}">$1,245.00</h3>
+                                </div>
+                                <i class="fa-solid fa-sack-dollar text-success fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Orders -->
+                    <div class="col-md-4">
+                        <div class="card card-custom p-4 border-start border-4 border-primary">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-secondary small fw-semibold">Total Orders</span>
+                                    <h3 class="fw-bold mb-0 mt-1" th:text="${totalOrdersCount}">24</h3>
+                                </div>
+                                <i class="fa-solid fa-truck-ramp-box text-primary fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Customers -->
+                    <div class="col-md-4">
+                        <div class="card card-custom p-4 border-start border-4 border-info">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-secondary small fw-semibold">Total Customers</span>
+                                    <h3 class="fw-bold mb-0 mt-1" th:text="${totalUsersCount}">8</h3>
+                                </div>
+                                <i class="fa-solid fa-users text-info fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts & Analytics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-8">
+                        <div class="card card-custom p-4 h-100 shadow-sm">
+                            <h5 class="fw-bold mb-3">Sales & Revenue Trend</h5>
+                            <div style="height: 250px;">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Low Stock Alerts -->
+                    <div class="col-md-4">
+                        <div class="card card-custom p-4 h-100 shadow-sm">
+                            <h5 class="fw-bold mb-3"><i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>Low Stock Alerts</h5>
+                            <div class="d-flex flex-column gap-3 max-vh-30 overflow-y-auto">
+                                <div class="alert alert-success py-2 text-center rounded-3 small border-0 mb-0" th:if="${#lists.isEmpty(lowStockProducts)}">
+                                    All products are fully in stock!
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between g-2 border-bottom pb-2" th:each="p : ${lowStockProducts}">
+                                    <div class="text-truncate col-8 small">
+                                        <span class="fw-bold d-block text-truncate" th:text="${p.name}">Product</span>
+                                        <span class="text-secondary" th:text="${'Brand: ' + (p.brand != null ? p.brand.name : 'Unknown')}">Brand</span>
+                                    </div>
+                                    <span class="badge bg-danger-subtle text-danger col-4 text-center py-1.5" th:text="${p.quantity + ' left'}">3 left</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders Table -->
+                <div class="card card-custom p-4 shadow-sm">
+                    <h5 class="fw-bold mb-3">Recent Checkout Orders</h5>
+                    <div class="table-responsive small">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total Pay</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ord : ${recentOrders}">
+                                    <td class="fw-bold" th:text="${'#FC-' + ord.id}">#FC-1</td>
+                                    <td th:text="${ord.user.username}">lisa</td>
+                                    <td th:text="${#temporals.format(ord.orderDate, 'dd MMM yyyy HH:mm')}">10 Jul 2026</td>
+                                    <td class="fw-bold text-primary" th:text="${'$' + ord.total}">$45.00</td>
+                                    <td>
+                                        <span class="badge text-uppercase" 
+                                              th:classappend="${ord.status == 'PENDING' ? 'bg-warning' : (ord.status == 'DELIVERED' ? 'bg-success' : 'bg-info')}" 
+                                              th:text="${ord.status}">PENDING</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary text-uppercase" th:text="${ord.paymentMethod}">COD</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(recentOrders)}">
+                                    <td colspan="6" class="text-center py-4 text-secondary">No orders have been recorded yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+    <div th:replace="~{layout :: scripts}"></div>
+
+    <script th:inline="javascript">
+        // Chart.js initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            // Simulating historical sales trend for dynamic charts
+            const chartData = {
+                labels: ['May', 'Jun', 'Jul (1st)', 'Jul (2nd)', 'Jul (3rd)', 'Jul (Current)'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [1500, 3200, 4800, 7200, 9500, [[${totalRevenue}]]],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

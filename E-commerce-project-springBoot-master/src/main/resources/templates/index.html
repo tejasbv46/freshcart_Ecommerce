@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta th:replace="~{layout :: head('Home | FreshCart E-Commerce')}">
+</head>
+<body>
+    <header th:replace="~{layout :: header}"></header>
+
+    <main class="container py-4 my-3">
+        <!-- Hero Banner -->
+        <div class="hero-banner d-flex flex-column flex-md-row align-items-center justify-content-between g-5">
+            <div class="col-md-6 text-center text-md-start">
+                <span class="badge bg-primary-subtle text-primary rounded-pill mb-3 px-3 py-2 fw-semibold">🌟 Mega Monsoon Sale up to 50% Off</span>
+                <h1 class="display-4 fw-bold mb-3">Fresh Grocery & <br><span class="text-primary">E-commerce Delivery</span></h1>
+                <p class="lead text-secondary mb-4">We deliver products fresh, quick, and straight to your doorstep within 15 minutes. Experience next-gen grocery shopping today.</p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
+                    <a href="/search" class="btn btn-gradient-primary rounded-pill btn-lg px-4"><i class="fa-solid fa-basket-shopping me-2"></i>Shop Now</a>
+                    <a href="#deals" class="btn btn-outline-secondary rounded-pill btn-lg px-4"><i class="fa-solid fa-tag me-2"></i>View Deals</a>
+                </div>
+            </div>
+            <div class="col-md-5 mt-4 mt-md-0 d-flex justify-content-center">
+                <!-- Using dynamic SVG illustration instead of missing images to guarantee premium aesthetics -->
+                <svg viewBox="0 0 500 400" width="100%" height="auto" style="max-width: 400px;">
+                    <defs>
+                        <linearGradient id="svgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#667eea" />
+                            <stop offset="100%" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="50" y="50" width="400" height="300" rx="30" fill="url(#svgGrad)" opacity="0.1" />
+                    <circle cx="250" cy="200" r="120" fill="url(#svgGrad)" opacity="0.8" />
+                    <path d="M190 230 L230 270 L310 170" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold">Shop by Category</h3>
+                <a href="/search" class="text-decoration-none">View All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+                <div class="col" th:each="cat : ${categories}">
+                    <a th:href="@{/search(category=${cat.name})}" class="text-decoration-none text-reset">
+                        <div class="card card-custom p-3 text-center h-100 hover-zoom">
+                            <div class="avatar bg-primary-subtle text-primary rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fa-solid fa-apple-whole fs-4" th:if="${cat.name == 'Fruits'}"></i>
+                                <i class="fa-solid fa-carrot fs-4" th:if="${cat.name == 'Vegetables'}"></i>
+                                <i class="fa-solid fa-cow fs-4" th:if="${cat.name == 'Dairy'}"></i>
+                                <i class="fa-solid fa-bread-slice fs-4" th:if="${cat.name == 'Bakery'}"></i>
+                                <i class="fa-solid fa-wine-glass fs-4" th:if="${cat.name == 'Drinks'}"></i>
+                                <i class="fa-solid fa-cookie fs-4" th:if="${cat.name == 'Sweets'}"></i>
+                                <i class="fa-solid fa-border-all fs-4" th:if="${cat.name != 'Fruits' && cat.name != 'Vegetables' && cat.name != 'Dairy' && cat.name != 'Bakery' && cat.name != 'Drinks' && cat.name != 'Sweets'}"></i>
+                            </div>
+                            <h6 class="fw-bold mb-0 text-truncate" th:text="${cat.name}">Category</h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Catalogue (Featured & Deals) -->
+        <section class="mb-5" id="deals">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">Featured Products</h3>
+                    <p class="text-secondary small mb-0">Our fresh and top-selling recommendations for you today.</p>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="alert alert-info text-center py-4 rounded-3 border-0" th:if="${#lists.isEmpty(products)}">
+                <i class="fa-solid fa-triangle-exclamation fs-3 mb-2"></i>
+                <p class="mb-0">No products are currently available. Check back soon!</p>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" th:unless="${#lists.isEmpty(products)}">
+                <!-- Product Card Loop -->
+                <div class="col" th:each="prod : ${products}">
+                    <div class="card card-custom h-100 d-flex flex-column">
+                        <!-- Discount Badge -->
+                        <span class="badge bg-danger position-absolute m-3" style="top: 0; left: 0;" th:if="${prod.discountPercentage > 0}" th:text="${prod.discountPercentage + '% OFF'}">10% OFF</span>
+                        
+                        <!-- Image -->
+                        <div class="p-3 text-center bg-light-subtle d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <img th:src="${prod.image}" class="img-fluid rounded" alt="Product Image" style="max-height: 180px; width: auto; object-fit: contain;">
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                            <span class="text-secondary small fw-semibold" th:text="${prod.category != null ? prod.category.name : 'Groceries'}">Category</span>
+                            <h6 class="fw-bold my-1 text-truncate">
+                                <a th:href="@{/product/{id}(id=${prod.id})}" class="text-decoration-none text-body" th:text="${prod.name}">Product Name</a>
+                            </h6>
+                            
+                            <!-- Rating -->
+                            <div class="d-flex align-items-center gap-1 text-warning small mb-3">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="text-secondary small pt-1" th:text="${prod.rating + ' (' + prod.reviewsCount + ' reviews)'}">5.0 (0)</span>
+                            </div>
+
+                            <!-- Pricing -->
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fs-5 fw-bold text-primary" th:text="${'$' + prod.price}">$3.0</span>
+                                    <span class="text-decoration-line-through text-secondary small ms-2" th:if="${prod.originalPrice > prod.price}" th:text="${'$' + prod.originalPrice}">$4.0</span>
+                                </div>
+                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 add-to-cart-btn" th:data-id="${prod.id}">
+                                    <i class="fa-solid fa-plus me-1"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Promo -->
+        <section class="my-5 bg-body-tertiary p-5 rounded-4 border">
+            <div class="row align-items-center justify-content-between g-4">
+                <div class="col-md-7">
+                    <h3 class="fw-bold mb-2">Get Discount Coupons Directly in Your Inbox</h3>
+                    <p class="text-secondary mb-0">Join our mailing list today and get an instant $10 discount coupon on your first order.</p>
+                </div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="email" class="form-control rounded-start-pill py-3" placeholder="Enter your email">
+                        <button class="btn btn-gradient-primary rounded-end-pill px-4" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+    <div th:replace="~{layout :: scripts}"></div>
+
+    <!-- Cart AJAX Add Script -->
+    <script>
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                fetch('/api/cart/add?productId=' + productId + '&quantity=1', {
+                    method: 'POST'
+                })
+                .then(res => {
+                    if (res.redirected) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    if (res.ok) {
+                        showToast('Product added to cart successfully!');
+                        refreshCartBadge();
+                    } else if (res.status === 401) {
+                        window.location.href = '/login';
+                    } else {
+                        showToast('Error adding product to cart.', 'danger');
+                    }
+                })
+                .catch(() => showToast('Network error.', 'danger'));
+            });
+        });
+    </script>
+</body>
+</html>
