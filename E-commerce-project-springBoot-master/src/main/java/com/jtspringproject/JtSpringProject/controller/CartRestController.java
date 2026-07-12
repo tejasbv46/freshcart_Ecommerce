@@ -32,6 +32,34 @@ public class CartRestController {
         return userService.getUserByUsername(username);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getCart() {
+        User user = getAuthenticatedUser();
+        if (user == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        Cart cart = cartService.getOrCreateCart(user);
+        List<CartProduct> items = cartService.getCartItems(cart);
+        
+        java.util.List<java.util.Map<String, Object>> response = new java.util.ArrayList<>();
+        for (CartProduct cp : items) {
+            java.util.Map<String, Object> itemMap = new java.util.HashMap<>();
+            itemMap.put("quantity", cp.getQuantity());
+            
+            Product p = cp.getProduct();
+            java.util.Map<String, Object> prodMap = new java.util.HashMap<>();
+            prodMap.put("id", p.getId());
+            prodMap.put("name", p.getName());
+            prodMap.put("image", p.getImage());
+            prodMap.put("price", p.getPrice());
+            prodMap.put("stock", p.getQuantity());
+            
+            itemMap.put("product", prodMap);
+            response.add(itemMap);
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> getCartCount() {
         User user = getAuthenticatedUser();
