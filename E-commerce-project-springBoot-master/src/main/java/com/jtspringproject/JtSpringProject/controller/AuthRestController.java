@@ -1,7 +1,9 @@
 package com.jtspringproject.JtSpringProject.controller;
 
+import com.jtspringproject.JtSpringProject.models.RefreshToken;
 import com.jtspringproject.JtSpringProject.models.User;
 import com.jtspringproject.JtSpringProject.services.EmailService;
+import com.jtspringproject.JtSpringProject.services.JwtService;
 import com.jtspringproject.JtSpringProject.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -24,11 +26,13 @@ public class AuthRestController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final EmailService emailService;
+    private final JwtService jwtService;
 
-    public AuthRestController(AuthenticationManager authenticationManager, UserService userService, EmailService emailService) {
+    public AuthRestController(AuthenticationManager authenticationManager, UserService userService, EmailService emailService, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.emailService = emailService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
@@ -39,14 +43,17 @@ public class AuthRestController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Establish the session for cookie persistence
+            // Establish the session for cookie persistence (optional fallback)
             HttpSession session = request.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
             
-            // Set legacy attributes to remain compatible with existing Thymeleaf controller checks if any
             User user = userService.getUserByUsername(loginRequest.getUsername());
             session.setAttribute("user", user);
             session.setAttribute("username", user.getUsername());
+
+            // Generate JWT credentials
+            String accessToken = jwtService.generateAccessToken(user.getUsername());
+            RefreshToken refreshToken = jwtService.createRefreshToken(user.getUsername());
 
             Map<String, Object> response = new HashMap<>();
             response.put("id", user.getId());
@@ -54,11 +61,39 @@ public class AuthRestController {
             response.put("email", user.getEmail());
             response.put("role", user.getRole());
             response.put("address", user.getAddress());
+            response.put("accessToken", accessToken);
+            response.put("refreshToken", refreshToken.getToken());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("message", "Invalid username or password");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody Map<String, String> requestBody) {
+        String requestRefreshToken = requestBody.get("refreshToken");
+        if (requestRefreshToken == null) {
+            return ResponseEntity.badRequest().body("Refresh token is missing");
+        }
+
+        java.util.Optional<RefreshToken> tokenOpt = jwtService.findByToken(requestRefreshToken);
+        if (tokenOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Refresh token is invalid or expired");
+        }
+
+        try {
+            RefreshToken verifiedToken = jwtService.verifyExpiration(tokenOpt.get());
+            User user = verifiedToken.getUser();
+            String accessToken = jwtService.generateAccessToken(user.getUsername());
+
+            Map<String, String> response = new HashMap<>();
+            response.put("accessToken", accessToken);
+            response.put("refreshToken", requestRefreshToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
