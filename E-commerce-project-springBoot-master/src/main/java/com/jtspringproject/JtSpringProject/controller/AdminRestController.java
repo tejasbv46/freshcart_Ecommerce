@@ -5,7 +5,10 @@ import com.jtspringproject.JtSpringProject.services.CategoryService;
 import com.jtspringproject.JtSpringProject.services.OrderService;
 import com.jtspringproject.JtSpringProject.services.ProductService;
 import com.jtspringproject.JtSpringProject.services.UserService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -14,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
+@Validated
 public class AdminRestController {
 
     private final OrderService orderService;
@@ -56,7 +60,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/categories/add")
-    public ResponseEntity<?> addCategory(@RequestParam("categoryname") String categoryName) {
+    public ResponseEntity<?> addCategory(@RequestParam("categoryname") @NotBlank(message = "Category name is required") String categoryName) {
         Category category = categoryService.addCategory(categoryName);
         return ResponseEntity.ok(category);
     }
@@ -64,7 +68,7 @@ public class AdminRestController {
     @PostMapping("/categories/update")
     public ResponseEntity<?> updateCategory(
             @RequestParam("categoryid") int id,
-            @RequestParam("categoryname") String categoryName) {
+            @RequestParam("categoryname") @NotBlank(message = "Category name is required") String categoryName) {
         Category category = categoryService.updateCategory(id, categoryName);
         return ResponseEntity.ok(category);
     }
@@ -80,7 +84,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/brands/add")
-    public ResponseEntity<?> addBrand(@RequestParam("name") String name) {
+    public ResponseEntity<?> addBrand(@RequestParam("name") @NotBlank(message = "Brand name is required") String name) {
         Brand brand = new Brand();
         brand.setName(name);
         Brand saved = productService.addBrand(brand);
@@ -89,14 +93,14 @@ public class AdminRestController {
 
     @PostMapping("/products/add")
     public ResponseEntity<?> addProduct(
-            @RequestParam("name") String name,
+            @RequestParam("name") @NotBlank(message = "Product name is required") String name,
             @RequestParam("categoryid") int categoryId,
             @RequestParam(value = "brandId", required = false) Integer brandId,
-            @RequestParam("price") int price,
-            @RequestParam("weight") int weight,
-            @RequestParam("quantity") int quantity,
-            @RequestParam("description") String description,
-            @RequestParam("productImage") String productImage) {
+            @RequestParam("price") @Min(value = 0, message = "Price must be non-negative") int price,
+            @RequestParam("weight") @Min(value = 0, message = "Weight must be non-negative") int weight,
+            @RequestParam("quantity") @Min(value = 0, message = "Quantity must be non-negative") int quantity,
+            @RequestParam("description") @NotBlank(message = "Description is required") String description,
+            @RequestParam("productImage") @NotBlank(message = "Product image URL is required") String productImage) {
         Product product = buildProduct(name, categoryId, brandId, price, weight, quantity, description, productImage);
         Product saved = productService.addProduct(product);
         return ResponseEntity.ok(saved);
@@ -105,14 +109,14 @@ public class AdminRestController {
     @PostMapping("/products/update/{id}")
     public ResponseEntity<?> updateProduct(
             @PathVariable("id") int id,
-            @RequestParam("name") String name,
+            @RequestParam("name") @NotBlank(message = "Product name is required") String name,
             @RequestParam("categoryid") int categoryId,
             @RequestParam(value = "brandId", required = false) Integer brandId,
-            @RequestParam("price") int price,
-            @RequestParam("weight") int weight,
-            @RequestParam("quantity") int quantity,
-            @RequestParam("description") String description,
-            @RequestParam("productImage") String productImage) {
+            @RequestParam("price") @Min(value = 0, message = "Price must be non-negative") int price,
+            @RequestParam("weight") @Min(value = 0, message = "Weight must be non-negative") int weight,
+            @RequestParam("quantity") @Min(value = 0, message = "Quantity must be non-negative") int quantity,
+            @RequestParam("description") @NotBlank(message = "Description is required") String description,
+            @RequestParam("productImage") @NotBlank(message = "Product image URL is required") String productImage) {
         Product product = buildProduct(name, categoryId, brandId, price, weight, quantity, description, productImage);
         Product updated = productService.updateProduct(id, product);
         return ResponseEntity.ok(updated);

@@ -7,8 +7,10 @@ import com.jtspringproject.JtSpringProject.services.CartService;
 import com.jtspringproject.JtSpringProject.services.EmailService;
 import com.jtspringproject.JtSpringProject.services.OrderService;
 import com.jtspringproject.JtSpringProject.services.UserService;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
+@Validated
 public class OrderRestController {
 
     private final OrderService orderService;
@@ -46,8 +49,8 @@ public class OrderRestController {
 
     @PostMapping("/place")
     public ResponseEntity<?> placeOrder(
-            @RequestParam("shippingAddress") String shippingAddress,
-            @RequestParam("paymentMethod") String paymentMethod,
+            @RequestParam("shippingAddress") @NotBlank(message = "Shipping address is required") String shippingAddress,
+            @RequestParam("paymentMethod") @NotBlank(message = "Payment method is required") String paymentMethod,
             @RequestParam(value = "couponCode", required = false) String couponCode) {
         User user = getAuthenticatedUser();
         if (user == null) {

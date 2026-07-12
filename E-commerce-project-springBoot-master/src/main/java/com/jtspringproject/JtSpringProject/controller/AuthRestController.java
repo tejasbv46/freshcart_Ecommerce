@@ -7,6 +7,8 @@ import com.jtspringproject.JtSpringProject.services.JwtService;
 import com.jtspringproject.JtSpringProject.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +38,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -98,7 +100,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest registerRequest) {
         if (userService.getUserByUsername(registerRequest.getUsername()) != null) {
             Map<String, String> error = new HashMap<>();
             error.put("message", "Username is already taken");
@@ -158,7 +160,10 @@ public class AuthRestController {
     }
 
     public static class LoginRequest {
+        @NotBlank(message = "Username is required")
         private String username;
+
+        @NotBlank(message = "Password is required")
         private String password;
 
         public String getUsername() { return username; }
@@ -168,9 +173,19 @@ public class AuthRestController {
     }
 
     public static class RegisterRequest {
+        @NotBlank(message = "Username is required")
+        @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
         private String username;
+
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
         private String email;
+
+        @NotBlank(message = "Password is required")
+        @Size(min = 4, message = "Password must be at least 4 characters long")
         private String password;
+
+        @NotBlank(message = "Address is required")
         private String address;
 
         public String getUsername() { return username; }
